@@ -16,7 +16,7 @@ limitations under the License.
 
 __title__ = 'proxyhub'
 __package__ = 'proxyhub'
-__version__ = '0.0.1a1'
+__version__ = '0.0.1a2'
 __short_description__ = 'An advanced [Finder | Checker | Server] tool for proxy servers, supporting both HTTP(S) and SOCKS protocols.'
 __author__ = 'ForceFledgling'
 __author_email__ = 'pvenv@icloud.com'
