@@ -8,8 +8,9 @@ from setuptools import setup
 with codecs.open('proxyhub/__init__.py', mode='r', encoding='utf-8') as f:
     INFO = dict(re.findall(r"__(\w+)__ = '([^']+)'", f.read(), re.MULTILINE))
 
-with codecs.open('README.md', mode='r', encoding='utf-8') as f:
-    INFO['long_description'] = f.read()
+# with codecs.open('README.md', mode='r', encoding='utf-8') as f:
+#     INFO['long_description'] = f.read()
+INFO['long_description'] = 'ProxyHub is an open source tool that asynchronously finds public proxies from multiple sources and concurrently checks them.'
 
 REQUIRES = [
     'aiohttp>=3.5.4',
@@ -49,6 +50,7 @@ setup(
     package_data=PACKAGE_DATA,
     platforms='any',
     python_requires='>=3.5.3',
+    entry_points={'console_scripts': ['proxyhub = proxyhub.cli:cli']},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
