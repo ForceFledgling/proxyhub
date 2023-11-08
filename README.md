@@ -4,8 +4,12 @@
 ProxyHub
 ===========
 
+![logo](docs/img/logo_transparent.png)
+
 ProxyHub is an open source tool that asynchronously finds public proxies from multiple sources and concurrently checks them.
 
+[![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](docs)
+[![License: Apache License 2.0](https://img.shields.io/badge/License-Apache2-brightgreen.svg)](https://choosealicense.com/licenses/apache-2.0/)
 [![pypi Version](https://img.shields.io/pypi/v/proxyhub.svg?style=flat-square&logo=proxyhub&logoColor=white)](https://pypi.org/project/proxyhub/)
 [![PyPi downloads](https://static.pepy.tech/personalized-badge/proxyhub?period=total&units=international_system&left_color=grey&right_color=orange&left_text=pip%20downloads)](https://pypi.org/project/proxyhub/)
 
@@ -327,13 +331,6 @@ Contributing
 -   Push to the branch: `git push origin my-new-feature`
 -   Submit a pull request!
 -   [Contributor workflow](https://github.com/ForceFledgling/proxyhub/issues/)
-
-License
--------
-
-Licensed under the Apache License, Version 2.0
-
-*This product includes GeoLite2 data created by MaxMind, available from* [<http://www.maxmind.com>](http://www.maxmind.com).
 
 ## Contributors ✨
 
