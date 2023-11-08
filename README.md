@@ -13,7 +13,7 @@ ProxyHub is an open source tool that asynchronously finds public proxies from mu
 [![pypi Version](https://img.shields.io/pypi/v/proxyhub.svg?style=flat-square&logo=proxyhub&logoColor=white)](https://pypi.org/project/proxyhub/)
 [![PyPi downloads](https://static.pepy.tech/personalized-badge/proxyhub?period=total&units=international_system&left_color=grey&right_color=orange&left_text=pip%20downloads)](https://pypi.org/project/proxyhub/)
 
-Features
+Features 🌟
 --------
 
 -   Finds more than 7000 working proxies from \~50 sources.
@@ -24,7 +24,7 @@ Features
 -   Automatically removes duplicate proxies.
 -   Is asynchronous.
 
-Requirements
+Requirements 📋
 ------------
 
 -   Python 3.8+
@@ -32,7 +32,7 @@ Requirements
 -   [aiodns](https://pypi.python.org/pypi/aiodns)
 -   [maxminddb](https://pypi.python.org/pypi/maxminddb)
 
-Installation
+Installation 🚀
 ------------
 
 ### Install locally
@@ -82,7 +82,7 @@ pip install pyinstaller \
 
 The executable is now in the build directory
 
-Usage
+Usage 💡
 -----
 
 ### CLI Examples
@@ -305,12 +305,7 @@ $ http_proxy=http://127.0.0.1:8888 https_proxy=http://127.0.0.1:8888 curl -v htt
 * Connection #0 to host 127.0.0.1 left intact
 ```
 
-Documentation
--------------
-
-<https://proxyhub.readthedocs.io/>
-
-TODO
+TODO 🛠️
 ----
 
 -   Check the ping, response time and speed of data transfer
@@ -321,7 +316,7 @@ TODO
 -   Finding outgoing IP for cascading proxy
 -   The ability to specify the address of the proxy without port (try to connect on defaulted ports)
 
-Contributing
+Contributing 🤝
 ------------
 
 -   Fork it: <https://github.com/ForceFledgling/proxyhub/fork>
@@ -331,12 +326,3 @@ Contributing
 -   Push to the branch: `git push origin my-new-feature`
 -   Submit a pull request!
 -   [Contributor workflow](https://github.com/ForceFledgling/proxyhub/issues/)
-
-## Contributors ✨
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
