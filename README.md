@@ -6,6 +6,9 @@ ProxyHub
 
 ProxyHub is an open source tool that asynchronously finds public proxies from multiple sources and concurrently checks them.
 
+[![pypi Version](https://img.shields.io/pypi/v/proxyhub.svg?style=flat-square&logo=proxyhub&logoColor=white)](https://pypi.org/project/proxyhub/)
+[![PyPi downloads](https://static.pepy.tech/personalized-badge/proxyhub?period=total&units=international_system&left_color=grey&right_color=orange&left_text=pip%20downloads)](https://pypi.org/project/proxyhub/)
+
 Features
 --------
 
