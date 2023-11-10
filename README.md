@@ -4,7 +4,7 @@
 ProxyHub
 ===========
 
-![logo](docs/img/logo_transparent.png)
+![logo](https://github.com/ForceFledgling/proxyhub/blob/main/docs/img/logo_transparent.png)
 
 ProxyHub is an open source tool that asynchronously finds public proxies from multiple sources and concurrently checks them.
 
@@ -95,8 +95,6 @@ Find and show 10 HTTP(S) proxies from United States with the high level of anony
 $ proxyhub find --types HTTP HTTPS --lvl High --countries US --strict -l 10
 ```
 
-![image](https://raw.githubusercontent.com/constverum/proxyhub/master/docs/source/_static/cli_find_example.gif)
-
 #### Grab
 
 Find and save to a file 10 US proxies (without a check):
@@ -105,8 +103,6 @@ Find and save to a file 10 US proxies (without a check):
 $ proxyhub grab --countries US --limit 10 --outfile ./proxies.txt
 ```
 
-![image](https://raw.githubusercontent.com/constverum/proxyhub/master/docs/source/_static/cli_grab_example.gif)
-
 #### Serve
 
 Run a local proxy server that distributes incoming requests to a pool of found HTTP(S) proxies with the high level of anonymity:
@@ -114,8 +110,6 @@ Run a local proxy server that distributes incoming requests to a pool of found H
 ``` {.sourceCode .bash}
 $ proxyhub serve --host 127.0.0.1 --port 8888 --types HTTP HTTPS --lvl High --min-queue 5
 ```
-
-![image](https://raw.githubusercontent.com/constverum/proxyhub/master/docs/source/_static/cli_serve_example.gif)
 
 Run `proxyhub --help` for more information on the options available.
 Run `proxyhub <command> --help` for more information on a command.
