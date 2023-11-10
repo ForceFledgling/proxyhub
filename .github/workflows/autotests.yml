@@ -31,7 +31,7 @@ jobs:
 
     - name: Run tests
       run: |
-        python -m pytest tests/
+        poetry run pytest tests/
 
   test-windows:
     runs-on: windows-latest
@@ -62,4 +62,4 @@ jobs:
 
     - name: Run tests
       run: |
-        python -m pytest tests/
+        poetry run pytest tests/
