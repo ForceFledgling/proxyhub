@@ -12,13 +12,13 @@ async def fetch(url, proxy_url):
     resp = None
     try:
         async with aiohttp.ClientSession() as session, session.get(
-            url, proxy=proxy_url
+                url, proxy=proxy_url
         ) as response:
             resp = await response.json()
     except (
-        aiohttp.errors.ClientOSError,
-        aiohttp.errors.ClientResponseError,
-        aiohttp.errors.ServerDisconnectedError,
+            aiohttp.errors.ClientOSError,
+            aiohttp.errors.ClientResponseError,
+            aiohttp.errors.ServerDisconnectedError,
     ) as e:
         print('Error!\nURL: %s;\nError: %r' % (url, e))
     finally:

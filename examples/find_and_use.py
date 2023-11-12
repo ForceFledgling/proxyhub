@@ -22,15 +22,15 @@ async def fetch(url, proxy_pool, timeout, loop):
         proxy_url = 'http://%s:%d' % (proxy.host, proxy.port)
         _timeout = aiohttp.ClientTimeout(total=timeout)
         async with aiohttp.ClientSession(
-            timeout=_timeout, loop=loop
+                timeout=_timeout, loop=loop
         ) as session, session.get(url, proxy=proxy_url) as response:
             resp = await response.text()
     except (
-        aiohttp.errors.ClientOSError,
-        aiohttp.errors.ClientResponseError,
-        aiohttp.errors.ServerDisconnectedError,
-        asyncio.TimeoutError,
-        NoProxyError,
+            aiohttp.errors.ClientOSError,
+            aiohttp.errors.ClientResponseError,
+            aiohttp.errors.ServerDisconnectedError,
+            asyncio.TimeoutError,
+            NoProxyError,
     ) as e:
         print('Error!\nURL: %s;\nError: %r\n', url, e)
     finally:

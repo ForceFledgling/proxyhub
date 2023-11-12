@@ -23,7 +23,8 @@ IPPattern = re.compile(
 )
 
 IPPortPatternLine = re.compile(
-    r'^.*?(?P<ip>(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)).*?(?P<port>\d{2,5}).*$',  # noqa
+    r'^.*?(?P<ip>(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)).*?(?P<port>\d{2,5}).*$',
+    # noqa
     flags=re.MULTILINE,
 )
 
@@ -33,6 +34,7 @@ IPPortPatternGlobal = re.compile(
     flags=re.DOTALL,
 )
 
+
 # IsIpPattern = re.compile(
 #     r'^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$')
 
@@ -40,8 +42,7 @@ IPPortPatternGlobal = re.compile(
 def get_headers(rv=False):
     _rv = str(random.randint(1000, 9999)) if rv else ''
     headers = {
-        # 'User-Agent': 'Mozilla/5.0 (X11; U; Linux i386; ru-RU; rv:2.0) Gecko/20100625 Firefox/3.5.11',  # noqa
-        'User-Agent': 'PxBroker/%s/%s' % (version, _rv),
+        'User-Agent': f'PxBroker/{version}/{_rv}',
         'Accept': '*/*',
         'Accept-Encoding': 'gzip, deflate',
         'Pragma': 'no-cache',
@@ -49,7 +50,7 @@ def get_headers(rv=False):
         'Cookie': 'cookie=ok',
         'Referer': 'https://www.google.com/',
     }
-    return headers if not rv else (headers, _rv)
+    return (headers, _rv) if rv else headers
 
 
 def get_all_ip(page):
@@ -69,17 +70,16 @@ def get_status_code(resp, start=9, stop=12):
 
 
 def parse_status_line(line):
-    _headers = {}
     is_response = line.startswith('HTTP/')
     try:
         if is_response:  # HTTP/1.1 200 OK
             version, status, *reason = line.split()
         else:  # GET / HTTP/1.1
             method, path, version = line.split()
-    except ValueError:
-        raise BadStatusLine(line)
+    except ValueError as e:
+        raise BadStatusLine(line) from e
 
-    _headers['Version'] = version.upper()
+    _headers = {'Version': version.upper()}
     if is_response:
         _headers['Status'] = int(status)
         reason = ' '.join(reason)
@@ -97,7 +97,7 @@ def parse_status_line(line):
 def parse_headers(headers):
     headers = headers.decode('utf-8', 'ignore').split('\r\n')
     _headers = {}
-    _headers.update(parse_status_line(headers.pop(0)))
+    _headers |= parse_status_line(headers.pop(0))
 
     for h in headers:
         if not h:
@@ -116,7 +116,7 @@ def update_geoip_db():
     filename = 'GeoLite2-City.tar.gz'
     local_file = os.path.join(DATA_DIR, filename)
     city_db = os.path.join(DATA_DIR, 'GeoLite2-City.mmdb')
-    url = 'http://geolite.maxmind.com/download/geoip/database/%s' % filename
+    url = f'http://geolite.maxmind.com/download/geoip/database/{filename}'
 
     urllib.request.urlretrieve(url, local_file)
 

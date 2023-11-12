@@ -1,4 +1,3 @@
-
 import asyncio
 import ipaddress
 import os.path
@@ -104,7 +103,7 @@ class Resolver:
             try:
                 timeout = aiohttp.ClientTimeout(total=self._timeout)
                 async with aiohttp.ClientSession(
-                    timeout=timeout, loop=self._loop
+                        timeout=timeout, loop=self._loop
                 ) as session, session.get(self._pop_random_ip_host()) as resp:
                     ip = await resp.text()
             except asyncio.TimeoutError:
@@ -123,8 +122,7 @@ class Resolver:
         if self.host_is_ip(host):
             return host
 
-        _host = self._cached_hosts.get(host)
-        if _host:
+        if _host := self._cached_hosts.get(host):
             return _host
 
         resp = await self._resolve(host, qtype)
@@ -141,15 +139,11 @@ class Resolver:
                 }
                 for r in resp
             ]
-            if family:
-                self._cached_hosts[host] = hosts
-            else:
-                self._cached_hosts[host] = hosts[0]['host']
+            self._cached_hosts[host] = hosts if family else hosts[0]['host']
             if logging:
-                log.debug('%s: Host resolved: %s' % (host, self._cached_hosts[host]))
-        else:
-            if logging:
-                log.warning('%s: Could not resolve host' % host)
+                log.debug(f'{host}: Host resolved: {self._cached_hosts[host]}')
+        elif logging:
+            log.warning(f'{host}: Could not resolve host')
         return self._cached_hosts.get(host)
 
     async def _resolve(self, host, qtype):
@@ -157,7 +151,7 @@ class Resolver:
             resp = await asyncio.wait_for(
                 self._resolver.query(host, qtype), timeout=self._timeout
             )
-        except (aiodns.error.DNSError, asyncio.TimeoutError):
-            raise ResolveError
+        except (aiodns.error.DNSError, asyncio.TimeoutError) as e:
+            raise ResolveError from e
         else:
             return resp

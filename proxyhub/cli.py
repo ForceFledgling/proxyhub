@@ -358,7 +358,7 @@ async def handle(proxies, outfile, format):
                 break
 
             if is_json:
-                line = '%s' % json.dumps(proxy.as_json())
+                line = f'{json.dumps(proxy.as_json())}'
             elif is_txt:
                 line = proxy.as_text()
             else:
@@ -369,7 +369,10 @@ async def handle(proxies, outfile, format):
             outfile.write(line)
             is_first = False
 
-def cli(args=sys.argv[1:]):
+
+def cli(args=None):
+    if args is None:
+        args = sys.argv[1:]
     parser = create_parser()
     ns = parser.parse_args(args)
 
