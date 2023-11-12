@@ -52,17 +52,17 @@ class Broker:
     """
 
     def __init__(
-        self,
-        queue=None,
-        timeout=8,
-        max_conn=200,
-        max_tries=3,
-        judges=None,
-        providers=None,
-        verify_ssl=False,
-        loop=None,
-        stop_broker_on_sigint=True,
-        **kwargs,
+            self,
+            queue=None,
+            timeout=8,
+            max_conn=200,
+            max_tries=3,
+            judges=None,
+            providers=None,
+            verify_ssl=False,
+            loop=None,
+            stop_broker_on_sigint=True,
+            **kwargs,
     ):
         self._loop = loop or asyncio.get_event_loop_policy().get_event_loop()
         self._proxies = queue or asyncio.Queue()
@@ -127,16 +127,16 @@ class Broker:
         self._all_tasks.append(task)
 
     async def find(
-        self,
-        *,
-        types=None,
-        data=None,
-        countries=None,
-        post=False,
-        strict=False,
-        dnsbl=None,
-        limit=0,
-        **kwargs,
+            self,
+            *,
+            types=None,
+            data=None,
+            countries=None,
+            post=False,
+            strict=False,
+            dnsbl=None,
+            limit=0,
+            **kwargs,
     ):
         """Gather and check proxies from providers or from a passed data.
 
@@ -493,7 +493,7 @@ class Broker:
                 for ngtr, event, runtime in p.get_log():
                     events_by_ngtr[ngtr].append((event, runtime))
                 for ngtr, events in sorted(
-                    events_by_ngtr.items(), key=lambda item: item[0]
+                        events_by_ngtr.items(), key=lambda item: item[0]
                 ):
                     full_log.append('\t%s' % ngtr)
                     for event, runtime in events:

@@ -96,17 +96,21 @@ def test_as_json_wo_geo():
 
 
 def test_schemes():
-    p = Proxy('127.0.0.1', '80')
-    p.types.update({'HTTP': 'Anonymous', 'HTTPS': None})
-    assert p.schemes == ('HTTP', 'HTTPS')
-
+    p = _extracted_from_test_schemes_2('HTTP', 'HTTPS', 'Anonymous')
     p = Proxy('127.0.0.1', '80')
     p.types['HTTPS'] = None
     assert p.schemes == ('HTTPS',)
 
-    p = Proxy('127.0.0.1', '80')
-    p.types.update({'SOCKS4': None, 'SOCKS5': None})
-    assert p.schemes == ('HTTP', 'HTTPS')
+    p = _extracted_from_test_schemes_2('SOCKS4', 'SOCKS5', None)
+
+
+# TODO Rename this here and in `test_schemes`
+def _extracted_from_test_schemes_2(arg0, arg1, arg2):
+    result = Proxy('127.0.0.1', '80')
+    result.types.update({arg0: arg2, arg1: None})
+    assert result.schemes == ('HTTP', 'HTTPS')
+
+    return result
 
 
 def test_avg_resp_time():
@@ -125,13 +129,17 @@ def test_error_rate():
 
 
 def test_geo():
-    p = Proxy('127.0.0.1', '80')
-    assert p.geo.code == '--'
-    assert p.geo.name == 'Unknown'
+    p = _extracted_from_test_geo_2('127.0.0.1', '--', 'Unknown')
+    p = _extracted_from_test_geo_2('8.8.8.8', 'US', 'United States')
 
-    p = Proxy('8.8.8.8', '80')
-    assert p.geo.code == 'US'
-    assert p.geo.name == 'United States'
+
+# TODO Rename this here and in `test_geo`
+def _extracted_from_test_geo_2(arg0, arg1, arg2):
+    result = Proxy(arg0, '80')
+    assert result.geo.code == arg1
+    assert result.geo.name == arg2
+
+    return result
 
 
 def test_ngtr():
@@ -151,18 +159,7 @@ def test_log(log):
     assert p._runtimes == []
 
     with log(logger.name, level='DEBUG') as cm:
-        p.log(msg)
-        p.ngtr = 'HTTP'
-        p.log(msg)
-        assert ('INFO', msg, 0) in p.get_log()
-        assert ('HTTP', msg, 0) in p.get_log()
-        assert len(p.stat['errors']) == 0
-        assert p._runtimes == []
-        assert cm.output == [
-            'DEBUG:proxyhub:127.0.0.1:80 [INFO]: MSG; Runtime: 0.00',
-            'DEBUG:proxyhub:127.0.0.1:80 [HTTP]: MSG; Runtime: 0.00',
-        ]
-
+        _extracted_from_test_log_11(p, msg, cm)
     p.log(msg, stime, err)
     p.log(msg, stime, err)
     assert len(p.stat['errors']) == 1
@@ -171,14 +168,29 @@ def test_log(log):
     assert round(p._runtimes[-1], 2) == 0.0
 
     len_runtimes = len(p._runtimes)
-    p.log(msg + 'timeout', stime)
+    p.log(f'{msg}timeout', stime)
     assert len(p._runtimes) == len_runtimes
 
     msg = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do'
     p.log(msg)
     last_msg = p.get_log()[-1][1]
-    cropped = msg[:60] + '...'
+    cropped = f'{msg[:60]}...'
     assert last_msg == cropped
+
+
+# TODO Rename this here and in `test_log`
+def _extracted_from_test_log_11(p, msg, cm):
+    p.log(msg)
+    p.ngtr = 'HTTP'
+    p.log(msg)
+    assert ('INFO', msg, 0) in p.get_log()
+    assert ('HTTP', msg, 0) in p.get_log()
+    assert len(p.stat['errors']) == 0
+    assert p._runtimes == []
+    assert cm.output == [
+        'DEBUG:proxyhub:127.0.0.1:80 [INFO]: MSG; Runtime: 0.00',
+        'DEBUG:proxyhub:127.0.0.1:80 [HTTP]: MSG; Runtime: 0.00',
+    ]
 
 
 @pytest.mark.asyncio
@@ -271,9 +283,9 @@ async def test_recv_content_encoding_chunked(proxy):
     proxy.reader._buffer.clear()
 
     resp = (
-        b'HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\n'
-        b'Transfer-Encoding: chunked\r\n\r\n'
-        b'5a' + b'\x1f' * 90 + b'\r\n\r\n0\r\n'
+            b'HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\n'
+            b'Transfer-Encoding: chunked\r\n\r\n'
+            b'5a' + b'\x1f' * 90 + b'\r\n\r\n0\r\n'
     )
     proxy.reader.feed_data(resp)
     assert await proxy.recv() == resp

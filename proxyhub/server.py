@@ -31,13 +31,13 @@ class ProxyPool:
     """Imports and gives proxies from queue on demand."""
 
     def __init__(
-        self,
-        proxies,
-        min_req_proxy=5,
-        max_error_rate=0.5,
-        max_resp_time=8,
-        min_queue=5,
-        strategy='best',
+            self,
+            proxies,
+            min_req_proxy=5,
+            max_error_rate=0.5,
+            max_resp_time=8,
+            min_queue=5,
+            strategy='best',
     ):
         self._proxies = proxies
         self._pool = []
@@ -62,7 +62,7 @@ class ProxyPool:
             for priority, proxy in self._pool:
                 if scheme in proxy.schemes:
                     chosen = proxy
-                    self._pool.remove((proxy.priority, proxy))
+                    self._pool.remove((chosen.priority, chosen))
                     break
             else:
                 chosen = await self._import(scheme)
@@ -82,11 +82,11 @@ class ProxyPool:
 
     def put(self, proxy):
         is_exceed_time = (proxy.error_rate > self._max_error_rate) or (
-            proxy.avg_resp_time > self._max_resp_time
+                proxy.avg_resp_time > self._max_resp_time
         )
         if proxy.stat['requests'] < self._min_req_proxy:
             self._newcomers.append(proxy)
-        elif proxy.stat['requests'] >= self._min_req_proxy and is_exceed_time:
+        elif is_exceed_time:
             log.debug('%s:%d removed from proxy pool' % (proxy.host, proxy.port))
         else:
             heapq.heappush(self._pool, (proxy.priority, proxy))
@@ -97,13 +97,13 @@ class ProxyPool:
         for proxy in self._newcomers:
             if proxy.host == host and proxy.port == port:
                 chosen = proxy
-                self._newcomers.remove(proxy)
+                self._newcomers.remove(chosen)
                 break
         else:
             for priority, proxy in self._pool:
                 if proxy.host == host and proxy.port == port:
                     chosen = proxy
-                    self._pool.remove((proxy.priority, proxy))
+                    self._pool.remove((chosen.priority, chosen))
                     break
 
         return chosen
@@ -113,21 +113,21 @@ class Server:
     """Server distributes incoming requests to a pool of found proxies."""
 
     def __init__(
-        self,
-        host,
-        port,
-        proxies,
-        timeout=8,
-        max_tries=3,
-        min_queue=5,
-        min_req_proxy=5,
-        max_error_rate=0.5,
-        max_resp_time=8,
-        prefer_connect=False,
-        http_allowed_codes=None,
-        backlog=100,
-        loop=None,
-        **kwargs,
+            self,
+            host,
+            port,
+            proxies,
+            timeout=8,
+            max_tries=3,
+            min_queue=5,
+            min_req_proxy=5,
+            max_error_rate=0.5,
+            max_resp_time=8,
+            prefer_connect=False,
+            http_allowed_codes=None,
+            backlog=100,
+            loop=None,
+            **kwargs,
     ):
         self.host = host
         self.port = int(port)
@@ -197,7 +197,7 @@ class Server:
 
     async def _handle(self, client_reader, client_writer):
         log.debug(
-            'Accepted connection from %s' % (client_writer.get_extra_info('peername'),)
+            f"Accepted connection from {client_writer.get_extra_info('peername')}"
         )
 
         request, headers = await self._parse_request(client_reader)
@@ -230,11 +230,9 @@ class Server:
                         )
                         if previous_proxy is None:
                             client_writer.write(b'HTTP/1.1 204 No Content\r\n\r\n')
-                            await client_writer.drain()
-                            return
                         else:
                             previous_proxy_bytestring = (
-                                '{"proxy": "%s"}' % previous_proxy
+                                    '{"proxy": "%s"}' % previous_proxy
                             ).encode()
                             client_writer.write(b'HTTP/1.1 200 OK\r\n')
                             client_writer.write(b'Content-Type: application/json\r\n')
@@ -247,9 +245,8 @@ class Server:
                             )
 
                             client_writer.write(previous_proxy_bytestring + b'\r\n')
-                            await client_writer.drain()
-                            return
-
+                        await client_writer.drain()
+                        return
         for attempt in range(self._max_tries):
             stime, err = 0, None
             proxy = await self._proxy_pool.get(scheme)
@@ -281,9 +278,9 @@ class Server:
 
                 history[
                     f"{client_reader._transport.get_extra_info('peername')[0]}-{headers['Path']}"
-                ] = (proxy.host + ':' + str(proxy.port))
+                ] = f'{proxy.host}:{str(proxy.port)}'
                 inject_resp_header = {
-                    'headers': {'X-Proxy-Info': proxy.host + ':' + str(proxy.port)}
+                    'headers': {'X-Proxy-Info': f'{proxy.host}:{str(proxy.port)}'}
                 }
 
                 stime = time.time()
@@ -305,13 +302,13 @@ class Server:
                 log.debug('Cancelled in server._handle')
                 break
             except (
-                ProxyTimeoutError,
-                ProxyConnError,
-                ProxyRecvError,
-                ProxySendError,
-                ProxyEmptyRecvError,
-                BadStatusError,
-                BadResponseError,
+                    ProxyTimeoutError,
+                    ProxyConnError,
+                    ProxyRecvError,
+                    ProxySendError,
+                    ProxyEmptyRecvError,
+                    BadStatusError,
+                    BadResponseError,
             ) as e:
                 log.debug('client: %d; error: %r' % (client, e))
                 continue
@@ -347,10 +344,7 @@ class Server:
         return request, headers
 
     def _identify_scheme(self, headers):
-        if headers['Method'] == 'CONNECT':
-            return 'HTTPS'
-        else:
-            return 'HTTP'
+        return 'HTTPS' if headers['Method'] == 'CONNECT' else 'HTTP'
 
     def _choice_proto(self, proxy, scheme):
         if scheme == 'HTTP':
@@ -358,11 +352,11 @@ class Server:
                 proto = 'CONNECT:80'
             else:
                 relevant = {
-                    'HTTP',
-                    'CONNECT:80',
-                    'SOCKS4',
-                    'SOCKS5',
-                } & proxy.types.keys()
+                               'HTTP',
+                               'CONNECT:80',
+                               'SOCKS4',
+                               'SOCKS5',
+                           } & proxy.types.keys()
                 proto = relevant.pop()
         else:  # HTTPS
             relevant = {'HTTPS', 'SOCKS4', 'SOCKS5'} & proxy.types.keys()
@@ -389,23 +383,16 @@ class Server:
                 writer.write(data)
                 await writer.drain()
 
-        except (
-            asyncio.TimeoutError,
-            ConnectionResetError,
-            OSError,
-            ProxyRecvError,
-            BadStatusError,
-            BadResponseError,
-        ) as e:
-            raise ErrorOnStream(e)
+        except (asyncio.TimeoutError, OSError, ProxyRecvError, BadStatusError, BadResponseError) as e:
+            raise ErrorOnStream(e) from e
 
     def _check_response(self, data, scheme):
         if scheme == 'HTTP' and self._http_allowed_codes:
             line = data.split(b'\r\n', 1)[0].decode()
             try:
                 header = parse_status_line(line)
-            except BadStatusLine:
-                raise BadResponseError
+            except BadStatusLine as e:
+                raise BadResponseError from e
             if header['Status'] not in self._http_allowed_codes:
                 raise BadStatusError(
                     '%r not in %r' % (header['Status'], self._http_allowed_codes)
@@ -414,13 +401,11 @@ class Server:
     def _inject_headers(self, data, scheme, headers):
         custom_lines = []
 
-        if scheme == 'HTTP' or scheme == 'HTTPS':
+        if scheme in ['HTTP', 'HTTPS']:
             status_line, rest_lines = data.split(b'\r\n', 1)
             custom_lines.append(status_line)
 
-            for k, v in headers.items():
-                custom_lines.append(('%s: %s' % (k, v)).encode())
-
+            custom_lines.extend(f'{k}: {v}'.encode() for k, v in headers.items())
             custom_lines.append(rest_lines)
             data = b'\r\n'.join(custom_lines)
 

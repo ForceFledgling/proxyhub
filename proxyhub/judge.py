@@ -34,7 +34,7 @@ class Judge:
 
     def __repr__(self):
         """Class representation"""
-        return '<Judge [%s] %s>' % (self.scheme, self.host)
+        return f'<Judge [{self.scheme}] {self.host}>'
 
     @classmethod
     def get_random(cls, proto):
@@ -76,16 +76,16 @@ class Judge:
         try:
             timeout = aiohttp.ClientTimeout(total=self.timeout)
             async with aiohttp.ClientSession(
-                connector=connector, timeout=timeout, loop=self._loop
+                    connector=connector, timeout=timeout, loop=self._loop
             ) as session, session.get(
                 url=self.url, headers=headers, allow_redirects=False
             ) as resp:
                 page = await resp.text()
         except (
-            asyncio.TimeoutError,
-            aiohttp.ClientOSError,
-            aiohttp.ClientResponseError,
-            aiohttp.ServerDisconnectedError,
+                asyncio.TimeoutError,
+                aiohttp.ClientOSError,
+                aiohttp.ClientResponseError,
+                aiohttp.ServerDisconnectedError,
         ) as e:
             log.debug('%s is failed. Error: %r;' % (self, e))
             return
@@ -98,7 +98,7 @@ class Judge:
             self.is_working = True
             self.available[self.scheme].append(self)
             self.ev[self.scheme].set()
-            log.debug('%s is verified' % self)
+            log.debug(f'{self} is verified')
         else:
             log.debug(
                 (

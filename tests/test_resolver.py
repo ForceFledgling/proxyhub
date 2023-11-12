@@ -20,15 +20,21 @@ def test_host_is_ip(resolver):
 
 
 def test_get_ip_info(resolver):
-    ip = resolver.get_ip_info('127.0.0.1')
-    assert ip.code == '--'
-    assert ip.name == 'Unknown'
+    ip = _extracted_from_test_get_ip_info_2(resolver, '127.0.0.1', '--', 'Unknown')
     assert ip.region_code == 'Unknown'
     assert ip.region_name == 'Unknown'
     assert ip.city_name == 'Unknown'
-    ip = resolver.get_ip_info('8.8.8.8')
-    assert ip.code == 'US'
-    assert ip.name == 'United States'
+    ip = _extracted_from_test_get_ip_info_2(
+        resolver, '8.8.8.8', 'US', 'United States'
+    )
+
+
+# TODO Rename this here and in `test_get_ip_info`
+def _extracted_from_test_get_ip_info_2(resolver, arg1, arg2, arg3):
+    result = resolver.get_ip_info(arg1)
+    assert result.code == arg2
+    assert result.name == arg3
+    return result
 
 
 @pytest.mark.asyncio
@@ -101,7 +107,7 @@ async def test_resolve_cache(event_loop, mocker, resolver):
     assert resolver._resolve.call_count == 2
 
     with mocker.patch('aiodns.DNSResolver.query', side_effect=f), pytest.raises(
-        Exception
+            Exception
     ):
         await resolver.resolve('test3.com')
     assert resolver._resolve.call_count == 3

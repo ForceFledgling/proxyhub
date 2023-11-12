@@ -36,10 +36,7 @@ class _AssertLogsContext:
 
     def __init__(self, logger_name=None, level=None):
         self.logger_name = logger_name
-        if level:
-            self.level = logging._nameToLevel.get(level, level)
-        else:
-            self.level = logging.INFO
+        self.level = logging._nameToLevel.get(level, level) if level else logging.INFO
         self.msg = None
 
     def __enter__(self):
@@ -68,9 +65,9 @@ class _AssertLogsContext:
             return False
         if len(self.watcher.records) == 0:
             __tracebackhide__ = True
-            assert 0, "no logs of level {} or higher triggered on {}".format(
-                logging.getLevelName(self.level), self.logger.name
-            )
+            assert (
+                0
+            ), f"no logs of level {logging.getLevelName(self.level)} or higher triggered on {self.logger.name}"
 
 
 @pytest.fixture
